@@ -70,24 +70,74 @@ export async function POST(req: Request) {
                 to: [email],
                 subject: `${inviterName} invited you to join ${groupName} on BandFlow!`,
                 html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-                        <h2 style="color: #4f46e5; text-align: center;">Welcome to BandFlow</h2>
-                        <p style="font-size: 16px; color: #374151;">Hello!</p>
-                        <p style="font-size: 16px; color: #374151;">
-                            <strong>${inviterName}</strong> has invited you to join their band <strong>${groupName}</strong> on BandFlow.
-                        </p>
-                        <p style="font-size: 16px; color: #374151;">
-                            You'll be joining as a <strong>${role}</strong>.
-                        </p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="${inviteLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                                Accept Invitation
-                            </a>
-                        </div>
-                        <p style="font-size: 14px; color: #6b7280; text-align: center;">
-                            If you don't use BandFlow yet, accepting the invitation will help you create your account.
-                        </p>
-                    </div>
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Invitation to BandFlow</title>
+                    </head>
+                    <body style="margin: 0; padding: 0; background-color: #050505; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
+                            <tr>
+                                <td align="center" style="padding: 40px 0 20px 0;">
+                                    <div style="font-size: 24px; font-weight: 900; font-style: italic; letter-spacing: -1px; color: #ffffff;">
+                                        BAND<span style="color: #6366f1;">FLOW</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 20px; background-color: #0c0c0c; border: 1px solid #1f1f1f; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                                        <tr>
+                                            <td style="padding: 40px;">
+                                                <div style="text-align: center; margin-bottom: 24px;">
+                                                    <div style="display: inline-block; padding: 12px; background-color: #4f46e5; border-radius: 12px; margin-bottom: 16px;">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                                                    </div>
+                                                    <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">Join the Band</h1>
+                                                </div>
+                                                
+                                                <p style="font-size: 16px; line-height: 24px; color: #a1a1aa; text-align: center; margin-bottom: 24px;">
+                                                    <strong style="color: #ffffff;">${inviterName}</strong> has invited you to join <strong style="color: #6366f1;">${groupName}</strong> on BandFlow.
+                                                </p>
+                                                
+                                                <p style="font-size: 16px; line-height: 24px; color: #a1a1aa; text-align: center; margin-bottom: 32px;">
+                                                    You are invited as a <span style="color: #ffffff; font-weight: 600; text-transform: capitalize;">${role}</span>. Ready to orchestrate your success?
+                                                </p>
+                                                
+                                                <div style="text-align: center; margin-bottom: 32px;">
+                                                    <a href="${inviteLink}" style="display: inline-block; padding: 16px 32px; background-color: #4338ca; color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; transition: background-color 0.2s;">
+                                                        Accept Invitation
+                                                    </a>
+                                                </div>
+                                                
+                                                <div style="border-top: 1px solid #1f1f1f; padding-top: 24px;">
+                                                    <p style="font-size: 13px; line-height: 20px; color: #71717a; text-align: center; margin: 0;">
+                                                        If the button above doesn't work, copy and paste this link into your browser:
+                                                    </p>
+                                                    <p style="font-size: 13px; line-height: 20px; color: #6366f1; text-align: center; margin: 8px 0 0 0; word-break: break-all;">
+                                                        ${inviteLink}
+                                                    </p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding: 32px 0 40px 0;">
+                                    <p style="font-size: 13px; color: #52525b; margin: 0;">
+                                        &copy; ${new Date().getFullYear()} BandFlow. Built for the stage.
+                                    </p>
+                                    <p style="font-size: 12px; color: #3f3f46; margin-top: 8px;">
+                                        If you weren't expecting this invitation, you can safely ignore this email.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </body>
+                    </html>
                 `,
             }),
         })
