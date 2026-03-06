@@ -2,8 +2,12 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-    let supabaseResponse = NextResponse.next({
-        request,
+    const { pathname } = request.nextUrl
+
+    let response = NextResponse.next({
+        request: {
+            headers: request.headers,
+        },
     })
 
     const supabase = createServerClient(
@@ -16,32 +20,35 @@ export async function middleware(request: NextRequest) {
                 },
                 setAll(cookiesToSet) {
                     cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-                    supabaseResponse = NextResponse.next({
-                        request,
+                    response = NextResponse.next({
+                        request: {
+                            headers: request.headers,
+                        },
                     })
                     cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
+                        response.cookies.set(name, value, options)
                     )
                 },
             },
         }
     )
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    // Protect dashboard routes
-    if (!user && request.nextUrl.pathname.match(/\/(dashboard|[^/]+$)/)) {
-        const pathPart = request.nextUrl.pathname.split('/')[1]
-        if (pathPart && pathPart !== 'login' && pathPart !== 'auth') {
-            const url = request.nextUrl.clone()
-            url.pathname = '/login'
-            return NextResponse.redirect(url)
-        }
+    // Check if the route is /login or starts with /auth
+    const isAuthRoute = pathname === '/login' || pathname.startsWith('/auth')
+
+    // If not logged in and trying to access a protected route (not /login or /auth)
+    if (!user && !isAuthRoute) {
+        return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    return supabaseResponse
+    // If logged in and trying to access login page, go to dashboard
+    if (user && pathname === '/login') {
+        return NextResponse.redirect(new URL('/', request.url))
+    }
+
+    return response
 }
 
 export const config = {
@@ -51,8 +58,8 @@ export const config = {
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
-         * Feel free to modify this pattern to include more paths.
+         * - public files with extensions
          */
-        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }
