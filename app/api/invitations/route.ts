@@ -1,11 +1,8 @@
 export const runtime = 'edge'
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { Resend } from "resend"
-
-// Initialize Resend with API Key (Needs RESEND_API_KEY in .env.local)
+// No Resend package needed, using direct fetch
 const resendApiKey = process.env.RESEND_API_KEY
-const resend = resendApiKey ? new Resend(resendApiKey) : null
 
 export async function POST(req: Request) {
     try {
@@ -46,7 +43,7 @@ export async function POST(req: Request) {
         const inviteLink = `${appUrl}/login?invite=${groupId}&email=${encodeURIComponent(email)}`
 
         // If no API key, we simulate the email sending (console log)
-        if (!resend) {
+        if (!resendApiKey) {
             console.log("=========================================")
             console.log("📧 MOCK EMAIL SENT")
             console.log(`To: ${email}`)
@@ -61,32 +58,41 @@ export async function POST(req: Request) {
             })
         }
 
-        // Send real email via Resend
-        const data = await resend.emails.send({
-            from: "BandFlow <invites@bandflow.app>", // Update this if you have a verified domain on Resend
-            to: [email],
-            subject: `${inviterName} invited you to join ${groupName} on BandFlow!`,
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-                    <h2 style="color: #4f46e5; text-align: center;">Welcome to BandFlow</h2>
-                    <p style="font-size: 16px; color: #374151;">Hello!</p>
-                    <p style="font-size: 16px; color: #374151;">
-                        <strong>${inviterName}</strong> has invited you to join their band <strong>${groupName}</strong> on BandFlow.
-                    </p>
-                    <p style="font-size: 16px; color: #374151;">
-                        You'll be joining as a <strong>${role}</strong>.
-                    </p>
-                    <div style="text-align: center; margin: 30px 0;">
-                        <a href="${inviteLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                            Accept Invitation
-                        </a>
+        // Send real email via Resend API using fetch
+        const response = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${resendApiKey}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                from: "BandFlow <invites@bandflow.app>",
+                to: [email],
+                subject: `${inviterName} invited you to join ${groupName} on BandFlow!`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <h2 style="color: #4f46e5; text-align: center;">Welcome to BandFlow</h2>
+                        <p style="font-size: 16px; color: #374151;">Hello!</p>
+                        <p style="font-size: 16px; color: #374151;">
+                            <strong>${inviterName}</strong> has invited you to join their band <strong>${groupName}</strong> on BandFlow.
+                        </p>
+                        <p style="font-size: 16px; color: #374151;">
+                            You'll be joining as a <strong>${role}</strong>.
+                        </p>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${inviteLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                                Accept Invitation
+                            </a>
+                        </div>
+                        <p style="font-size: 14px; color: #6b7280; text-align: center;">
+                            If you don't use BandFlow yet, accepting the invitation will help you create your account.
+                        </p>
                     </div>
-                    <p style="font-size: 14px; color: #6b7280; text-align: center;">
-                        If you don't use BandFlow yet, accepting the invitation will help you create your account.
-                    </p>
-                </div>
-            `,
+                `,
+            }),
         })
+
+        const data = await response.json()
 
         return NextResponse.json({ success: true, data })
     } catch (error: any) {
