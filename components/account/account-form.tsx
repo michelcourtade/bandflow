@@ -12,6 +12,7 @@ import { toast } from "sonner"
 export function AccountForm({ user }: { user: any }) {
     const [isLoading, setIsLoading] = useState(false)
     const [fullName, setFullName] = useState(user.user_metadata?.full_name || "")
+    const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
 
@@ -47,25 +48,42 @@ export function AccountForm({ user }: { user: any }) {
     async function updatePassword(e: React.FormEvent) {
         e.preventDefault()
 
+        if (!currentPassword) {
+            toast.error("Please enter your current password")
+            return
+        }
+
         if (newPassword !== confirmPassword) {
-            toast.error("Passwords do not match")
+            toast.error("New passwords do not match")
             return
         }
 
         if (newPassword.length < 6) {
-            toast.error("Password must be at least 6 characters")
+            toast.error("New password must be at least 6 characters")
             return
         }
 
         setIsLoading(true)
 
         try {
+            // 1. Verify current password by attempting to sign in
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: user.email!,
+                password: currentPassword,
+            })
+
+            if (signInError) {
+                throw new Error("Invalid current password")
+            }
+
+            // 2. Update to new password
             const { error } = await supabase.auth.updateUser({
                 password: newPassword
             })
 
             if (error) throw error
 
+            setCurrentPassword("")
             setNewPassword("")
             setConfirmPassword("")
             toast.success("Password updated successfully")
@@ -140,6 +158,18 @@ export function AccountForm({ user }: { user: any }) {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={updatePassword} className="space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="currentPassword" className="text-zinc-400 text-xs font-bold uppercase tracking-widest pl-1">Current Password</Label>
+                            <Input
+                                id="currentPassword"
+                                type="password"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                placeholder="Enter your current password"
+                                className="bg-zinc-950 border-zinc-800 text-white h-12 rounded-xl focus:ring-indigo-500"
+                            />
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label htmlFor="newPassword" className="text-zinc-400 text-xs font-bold uppercase tracking-widest">New Password</Label>
