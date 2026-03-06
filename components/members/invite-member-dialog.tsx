@@ -59,11 +59,13 @@ export function InviteMemberDialog({ groupId }: { groupId: string }) {
 
         const { error } = await supabase
             .from("group_invitations")
-            .insert({
+            .upsert({
                 group_id: groupId,
                 email: formData.email,
                 role: formData.role,
                 status: 'pending'
+            }, {
+                onConflict: 'group_id,email'
             })
 
         if (!error) {

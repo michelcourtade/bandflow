@@ -107,11 +107,18 @@ export async function POST(req: Request) {
                                                 </p>
                                                 
                                                 <div style="text-align: center; margin-bottom: 32px;">
-                                                    <a href="${inviteLink}" style="display: inline-block; padding: 16px 32px; background-color: #4338ca; color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; transition: background-color 0.2s;">
+                                                    <a href="${inviteLink}" style="display: inline-block; padding: 16px 32px; background-color: #4338ca; color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px;">
                                                         Accept Invitation
                                                     </a>
                                                 </div>
                                                 
+                                                <div style="background-color: #161616; border-radius: 12px; padding: 24px; margin-bottom: 32px; border: 1px solid #262626;">
+                                                    <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 1px;">What is BandFlow?</h2>
+                                                    <p style="margin: 0; font-size: 14px; line-height: 20px; color: #a1a1aa;">
+                                                        BandFlow is the ultimate workspace for modern bands. A single place to manage your <strong>repertoire</strong>, craft perfect <strong>setlists</strong>, and centralize all your <strong>charts and recordings</strong>. Built by musicians, for the stage.
+                                                    </p>
+                                                </div>
+
                                                 <div style="border-top: 1px solid #1f1f1f; padding-top: 24px;">
                                                     <p style="font-size: 13px; line-height: 20px; color: #71717a; text-align: center; margin: 0;">
                                                         If the button above doesn't work, copy and paste this link into your browser:
@@ -144,10 +151,13 @@ export async function POST(req: Request) {
 
         const data = await response.json()
 
+        if (!response.ok) {
+            return NextResponse.json({ error: data.message || "Failed to send email" }, { status: response.status })
+        }
+
         return NextResponse.json({ success: true, data })
     } catch (error: any) {
         console.error("Failed to send invite email:", error)
         return NextResponse.json({ error: error.message }, { status: 500 })
     }
 }
-// Trigger build
