@@ -4,3 +4,4 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 NEXT_PUBLIC_SUPABASE_URL = "https://jyccznomokkykpnoycyk.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_ReB_by3g1kVnAlDrnw65pw_f3klx-Mf"

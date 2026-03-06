@@ -4,48 +4,59 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
+    // Check for required environment variables
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+        console.error('Missing Supabase environment variables')
+        // Allow the request to proceed to see if the page itself can handle it or show a better error
+        return NextResponse.next()
+    }
+
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
     })
 
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll()
+    try {
+        const supabase = createServerClient(
+            supabaseUrl,
+            supabaseAnonKey,
+            {
+                cookies: {
+                    getAll() {
+                        return request.cookies.getAll()
+                    },
+                    setAll(cookiesToSet) {
+                        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+                        response = NextResponse.next({
+                            request: {
+                                headers: request.headers,
+                            },
+                        })
+                        cookiesToSet.forEach(({ name, value, options }) =>
+                            response.cookies.set(name, value, options)
+                        )
+                    },
                 },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    })
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        response.cookies.set(name, value, options)
-                    )
-                },
-            },
+            }
+        )
+
+        const { data: { user } } = await supabase.auth.getUser()
+
+        const isAuthRoute = pathname === '/login' || pathname.startsWith('/auth')
+
+        if (!user && !isAuthRoute) {
+            return NextResponse.redirect(new URL('/login', request.url))
         }
-    )
 
-    const { data: { user } } = await supabase.auth.getUser()
-
-    // Check if the route is /login or starts with /auth
-    const isAuthRoute = pathname === '/login' || pathname.startsWith('/auth')
-
-    // If not logged in and trying to access a protected route (not /login or /auth)
-    if (!user && !isAuthRoute) {
-        return NextResponse.redirect(new URL('/login', request.url))
-    }
-
-    // If logged in and trying to access login page, go to dashboard
-    if (user && pathname === '/login') {
-        return NextResponse.redirect(new URL('/', request.url))
+        if (user && pathname === '/login') {
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+    } catch (e) {
+        console.error('Middleware error:', e)
     }
 
     return response
@@ -53,13 +64,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public files with extensions
-         */
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }
