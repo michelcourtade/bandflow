@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = { variable: "font-sans" };
@@ -22,6 +23,7 @@ export default function RootLayout({
       >
         <TooltipProvider>
           {children}
+          <Toaster position="bottom-right" theme="dark" closeButton />
         </TooltipProvider>
       </body>
     </html>

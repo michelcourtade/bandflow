@@ -58,6 +58,7 @@ export default async function HomePage() {
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/account" className="text-zinc-400 hover:text-white text-sm transition-colors">Account</Link>
             <span className="text-zinc-400 text-sm hidden md:inline">{user.email}</span>
             <form action="/auth/signout" method="post">
               <Button variant="ghost" className="text-zinc-400 hover:text-white">Sign Out</Button>

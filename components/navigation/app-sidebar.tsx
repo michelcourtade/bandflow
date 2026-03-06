@@ -160,9 +160,11 @@ export function AppSidebar({
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator className="bg-zinc-800" />
-                                <DropdownMenuItem className="hover:bg-zinc-800 hover:text-white cursor-pointer focus:bg-zinc-800 focus:text-white">
-                                    <User className="mr-2 h-4 w-4" />
-                                    Account
+                                <DropdownMenuItem className="hover:bg-zinc-800 hover:text-white cursor-pointer focus:bg-zinc-800 focus:text-white" asChild>
+                                    <Link href="/account">
+                                        <User className="mr-2 h-4 w-4" />
+                                        Account
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="hover:bg-zinc-800 hover:text-white cursor-pointer focus:bg-zinc-800 focus:text-white" asChild>
                                     <a href="/">
