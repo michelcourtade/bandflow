@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { AppSidebar } from "@/components/navigation/app-sidebar"
+import { MobileNav } from "@/components/navigation/mobile-nav"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Music } from "lucide-react"
@@ -49,10 +50,11 @@ export default async function DashboardLayout({
                         <span className="font-semibold text-zinc-200">{groupName}</span>
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+                <div className="flex flex-1 flex-col gap-4 p-4 md:p-8 pb-24 lg:pb-8">
                     {children}
                 </div>
             </SidebarInset>
+            <MobileNav groupId={groupId} />
         </SidebarProvider>
     )
 }
