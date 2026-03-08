@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
     Select,
     SelectContent,
@@ -71,7 +72,7 @@ export function InviteMemberDialog({ groupId }: { groupId: string }) {
         if (!error) {
             // Trigger the email API route
             try {
-                await fetch("/api/invitations", {
+                const response = await fetch("/api/invitations", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -80,15 +81,24 @@ export function InviteMemberDialog({ groupId }: { groupId: string }) {
                         role: formData.role
                     })
                 })
+
+                const data = await response.json()
+
+                if (response.ok) {
+                    toast.success(`Invitation sent to ${formData.email}`)
+                    setOpen(false)
+                    setFormData({ email: "", role: "member", instrument: "" })
+                    router.refresh()
+                } else {
+                    toast.error(`Email error: ${data.error || "Failed to send"}`)
+                }
             } catch (apiError) {
                 console.error("Failed to trigger email API", apiError)
+                toast.error("Network error while sending invitation")
             }
-
-            router.refresh()
-            setOpen(false)
-            setFormData({ email: "", role: "member", instrument: "" })
         } else {
             console.error(error)
+            toast.error("Database error while creating invitation")
         }
         setIsLoading(false)
     }
