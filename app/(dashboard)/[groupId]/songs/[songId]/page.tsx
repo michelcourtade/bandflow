@@ -68,6 +68,7 @@ export default async function SongDetailPage({
             spotify_url,
             deezer_url,
             videos,
+            lyrics,
             songs (
                 title,
                 artist,
@@ -236,6 +237,23 @@ export default async function SongDetailPage({
                     </div>
 
                     <div className="bg-[#0a0a0a] border border-zinc-800/50 rounded-2xl p-6 shadow-xl space-y-8">
+                        {/* Lyrics Display */}
+                        {song.lyrics && (
+                            <div className="space-y-4 pb-8 border-b border-zinc-800/50">
+                                <div className="flex items-center justify-between">
+                                    <h4 className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest pl-1">Master Lyrics</h4>
+                                    <Button asChild variant="ghost" size="sm" className="h-7 text-[10px] text-zinc-500 hover:text-white">
+                                         <Link href={`/${groupId}/songs/${song.id}`}>Edit Arrangement</Link>
+                                    </Button>
+                                </div>
+                                <div className="bg-zinc-900/30 p-6 rounded-xl border border-zinc-800/50">
+                                    <pre className="text-zinc-300 text-sm md:text-base font-sans whitespace-pre-wrap leading-relaxed">
+                                        {song.lyrics}
+                                    </pre>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Uploader */}
                         <DocumentUploader groupId={groupId} songId={song.song_id} userId={user.id} />
 

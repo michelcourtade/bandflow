@@ -9,16 +9,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]",
+        default: "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-[1.01] active:scale-[0.96]",
         destructive:
-          "bg-destructive text-white shadow-lg shadow-destructive/20 hover:bg-destructive/90 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
+          "bg-destructive text-white shadow-lg shadow-destructive/20 hover:bg-destructive/90 hover:scale-[1.01] active:scale-[0.96] focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
-          "border-2 border-primary/30 bg-primary/5 text-primary shadow-sm hover:bg-primary/10 hover:border-primary/50 hover:scale-[1.02] active:scale-[0.98] dark:border-primary/20 dark:bg-primary/5 dark:text-primary-foreground/90 dark:hover:bg-primary/15 dark:hover:border-primary/40",
+          "border-2 border-primary/30 bg-primary/5 text-primary shadow-sm hover:bg-primary/10 hover:border-primary/50 hover:scale-[1.01] active:scale-[0.96] dark:border-primary/20 dark:bg-primary/5 dark:text-primary-foreground/90 dark:hover:bg-primary/15 dark:hover:border-primary/40",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-md hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98]",
+          "bg-secondary text-secondary-foreground shadow-md hover:bg-secondary/80 hover:scale-[1.01] active:scale-[0.96]",
         ghost:
-          "hover:bg-primary/10 hover:text-primary hover:scale-[1.02] active:scale-[0.98] dark:hover:bg-primary/10 dark:hover:text-primary-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "hover:bg-primary/10 hover:text-primary hover:scale-[1.01] active:scale-[0.96] dark:hover:bg-primary/10 dark:hover:text-primary-foreground",
+        link: "text-primary underline-offset-4 hover:underline active:opacity-70",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

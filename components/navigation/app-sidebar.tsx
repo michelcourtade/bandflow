@@ -101,7 +101,7 @@ export function AppSidebar({
                             <SidebarMenuButton
                                 asChild
                                 tooltip={item.title}
-                                className="hover:bg-zinc-900 text-zinc-400 hover:text-white group"
+                                className="hover:bg-zinc-900 text-zinc-400 hover:text-white group active:scale-[0.97] transition-all"
                                 onClick={() => setOpenMobile(false)}
                             >
                                 <Link href={item.url}>

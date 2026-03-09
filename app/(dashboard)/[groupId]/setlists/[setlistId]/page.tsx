@@ -1,6 +1,10 @@
 export const runtime = 'edge'
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Play } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { SetlistBuilder } from "@/components/setlists/setlist-builder"
 
 export default async function SetlistBuilderPage({
@@ -79,12 +83,32 @@ export default async function SetlistBuilderPage({
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="text-right hidden sm:block">
+                    <div className="text-right hidden sm:block mr-2">
                         <div className="text-xs text-zinc-500 uppercase tracking-widest font-bold">Planned Duration</div>
                         <div className="text-xl font-mono text-indigo-400">
                             ~ {Math.floor((items || []).reduce((acc: number, curr: any) => acc + (curr.group_songs.duration_seconds || curr.group_songs.songs.duration_seconds || 0), 0) / 60)}:00
                         </div>
                     </div>
+                    <Button 
+                        asChild={items && items.length > 0} 
+                        disabled={!items || items.length === 0}
+                        className={cn(
+                            "rounded-xl font-bold shadow-lg transition-all",
+                            items && items.length > 0 
+                                ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/10" 
+                                : "bg-zinc-800 text-zinc-500 cursor-not-allowed border-zinc-700"
+                        )}
+                    >
+                        {items && items.length > 0 ? (
+                            <Link href={`/stage/${groupId}/${setlistId}`}>
+                                <Play className="h-4 w-4 mr-2 fill-current" /> Stage Mode
+                            </Link>
+                        ) : (
+                            <span className="flex items-center">
+                                <Play className="h-4 w-4 mr-2" /> Stage Mode
+                            </span>
+                        )}
+                    </Button>
                 </div>
             </div>
 

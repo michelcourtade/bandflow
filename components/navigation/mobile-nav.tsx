@@ -46,7 +46,7 @@ export function MobileNav({ groupId }: { groupId: string }) {
                             key={item.url}
                             href={item.url}
                             className={cn(
-                                "flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200",
+                                "flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200 active:scale-90",
                                 isActive ? "text-indigo-500 scale-110" : "text-zinc-500 hover:text-zinc-300"
                             )}
                         >

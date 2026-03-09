@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS public.group_songs (
     key_override TEXT,
     lead_vocal UUID REFERENCES public.profiles(id),
     note TEXT,
+    lyrics TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE (group_id, song_id)
 );

@@ -24,7 +24,8 @@ import {
     Type,
     CircleDot,
     Clock,
-    Youtube
+    Youtube,
+    AlignLeft
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
@@ -54,6 +55,7 @@ export function EditSongDialog({ song, isOpen, onOpenChange }: EditSongDialogPro
         duration_seconds: "",
         key_override: "",
         note: "",
+        lyrics: "",
         spotify_url: "",
         deezer_url: "",
         videos: [] as { title: string, url: string }[]
@@ -71,6 +73,7 @@ export function EditSongDialog({ song, isOpen, onOpenChange }: EditSongDialogPro
                 duration_seconds: song.duration_seconds ? (song.duration_seconds % 60).toString() : "",
                 key_override: song.key_override || "",
                 note: song.note || "",
+                lyrics: (song as any).lyrics || "",
                 spotify_url: (song as any).spotify_url || "",
                 deezer_url: (song as any).deezer_url || "",
                 videos: (song as any).videos || []
@@ -92,6 +95,7 @@ export function EditSongDialog({ song, isOpen, onOpenChange }: EditSongDialogPro
                 duration_seconds: totalSeconds || null,
                 key_override: formData.key_override || null,
                 note: formData.note || null,
+                lyrics: formData.lyrics || null,
                 spotify_url: formData.spotify_url || null,
                 deezer_url: formData.deezer_url || null,
                 videos: formData.videos || []
@@ -328,8 +332,23 @@ export function EditSongDialog({ song, isOpen, onOpenChange }: EditSongDialogPro
                         <Textarea
                             value={formData.note}
                             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, note: e.target.value })}
-                            className="bg-zinc-900/50 border-zinc-800 rounded-xl min-h-[100px] focus:ring-indigo-500 transition-all resize-none"
+                            className="bg-zinc-900/50 border-zinc-800 rounded-xl min-h-[80px] focus:ring-indigo-500 transition-all resize-none text-sm"
                             placeholder="Add rehearsal notes..."
+                        />
+                    </div>
+
+                    <div className="space-y-2 pt-4 border-t border-zinc-800">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-zinc-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                <AlignLeft className="h-3 w-3" /> Master Lyrics
+                            </Label>
+                            <span className="text-[10px] text-zinc-600 italic">Visible in Stage Mode</span>
+                        </div>
+                        <Textarea
+                            value={formData.lyrics}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, lyrics: e.target.value })}
+                            className="bg-zinc-900/50 border-zinc-800 rounded-xl min-h-[150px] focus:ring-indigo-500 transition-all font-mono text-sm leading-relaxed"
+                            placeholder="Paste song lyrics here..."
                         />
                     </div>
                 </div>

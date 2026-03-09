@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "The collaborative platform for music bands to orchestrate their success.",
 };
 
+import NextTopLoader from 'nextjs-toploader';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,6 +25,17 @@ export default function RootLayout({
         <meta name="theme-color" content="#4f46e5" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-indigo-500/30`}>
+        <NextTopLoader 
+            color="#6366f1"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px #6366f1,0 0 5px #6366f1"
+        />
         <TooltipProvider>
           {children}
           <Toaster position="bottom-right" theme="dark" closeButton />
